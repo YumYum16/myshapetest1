@@ -151,6 +151,10 @@ export default function Essayer() {
         setErrorMessage('Accès à la caméra refusé. Veuillez autoriser l\'accès dans les paramètres de votre navigateur.');
       } else if (err.name === 'NotFoundError') {
         setErrorMessage('Aucune caméra détectée sur votre appareil.');
+      } else if (err.message && err.message.includes('Requested device not found')) {
+        setErrorMessage('Aucune caméra disponible. Vérifiez que votre appareil dispose d\'une caméra et qu\'elle n\'est pas utilisée par une autre application.');
+      } else if (err.message && err.message.includes('Permission denied')) {
+        setErrorMessage('Accès à la caméra refusé. Veuillez vérifier les permissions dans les paramètres de votre navigateur.');
       } else {
         setErrorMessage('Impossible d\'accéder à la caméra. Vérifiez votre connexion et réessayez.');
       }
