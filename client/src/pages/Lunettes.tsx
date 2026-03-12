@@ -471,10 +471,11 @@ export default function Lunettes() {
                           href={frame.affiliateUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-semibold transition-all duration-200 hover:opacity-90"
+                          className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-semibold transition-all duration-200 hover:bg-[#1A1A1A] hover:text-white"
                           style={{
-                            backgroundColor: affiliateColors[frame.affiliate] || '#0D6E4F',
-                            color: 'white',
+                            backgroundColor: 'transparent',
+                            color: '#1A1A1A',
+                            border: '1px solid #1A1A1A',
                             fontFamily: "'DM Sans', sans-serif",
                           }}
                         >

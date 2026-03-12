@@ -383,7 +383,7 @@ export default function Essayer() {
               <div
                 className="relative rounded-2xl overflow-hidden"
                 style={{
-                  backgroundColor: '#0F1A17',
+                  backgroundColor: '#F0F0EE',
                   aspectRatio: '4/3',
                   minHeight: '300px',
                 }}
@@ -443,13 +443,13 @@ export default function Essayer() {
                     </div>
                     <h2
                       className="text-2xl font-bold mb-3"
-                      style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#E8F5F0' }}
+                      style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#1C2B26' }}
                     >
                       Prêt à analyser
                     </h2>
                     <p
                       className="text-sm mb-2 max-w-xs"
-                      style={{ color: 'rgba(232, 245, 240, 0.65)', fontFamily: "'DM Sans', sans-serif" }}
+                      style={{ color: '#6B7280', fontFamily: "'DM Sans', sans-serif" }}
                     >
                       Positionnez votre visage face à la caméra dans un endroit bien éclairé.
                     </p>
@@ -483,7 +483,7 @@ export default function Essayer() {
                     </div>
                     <p
                       className="text-sm"
-                      style={{ color: '#E8F5F0', fontFamily: "'DM Sans', sans-serif" }}
+                      style={{ color: '#1C2B26', fontFamily: "'DM Sans', sans-serif" }}
                     >
                       Connexion à la caméra...
                     </p>
@@ -606,7 +606,7 @@ export default function Essayer() {
                     </div>
                     <p
                       className="text-sm mb-6 max-w-xs"
-                      style={{ color: '#E8F5F0', fontFamily: "'DM Sans', sans-serif" }}
+                      style={{ color: '#1C2B26', fontFamily: "'DM Sans', sans-serif" }}
                     >
                       {errorMessage}
                     </p>
@@ -761,10 +761,11 @@ export default function Essayer() {
                                 href={frame.affiliateUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-colors"
+                                className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-colors hover:bg-[#1A1A1A] hover:text-white"
                                 style={{
-                                  backgroundColor: '#F3F4F6',
-                                  color: '#374151',
+                                  backgroundColor: 'transparent',
+                                  color: '#1A1A1A',
+                                  border: '1px solid #1A1A1A',
                                   fontFamily: "'DM Sans', sans-serif",
                                 }}
                               >
