@@ -1,9 +1,9 @@
 // MyShape — Page Catalogue Lunettes (/lunettes)
 // Design: Tech-Luxe Émeraude | Grille de montures avec filtres et liens affiliés
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Link, useLocation } from 'wouter';
-import { Filter, SlidersHorizontal, ExternalLink, Eye, X, Camera, ChevronDown } from 'lucide-react';
+import { Filter, SlidersHorizontal, ExternalLink, Eye, X, Camera, ChevronDown, Heart } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import GlassesSVG from '@/components/GlassesSVG';
@@ -34,29 +34,66 @@ const frameColors: Record<string, string> = {
   'moscot-lemtosh': '#6B4226',
 };
 
+const frameReviews: Record<string, { rating: number; review: string; reviewer: string; shape: FaceShape }> = {
+  'ray-ban-clubmaster': { rating: 5, review: 'Exactement ce que je cherchais pour mon visage carré. Élégant et intemporel.', reviewer: 'Marc, visage Carré', shape: 'Carré' },
+  'tom-ford-ft5304': { rating: 5, review: 'Une monture qui change tout. J\'ai reçu des compliments dès le premier jour.', reviewer: 'Lucie, visage Diamant', shape: 'Diamant' },
+  'persol-po3007v': { rating: 4, review: 'Très belle qualité, les charnières sont incroyables. Un peu larges pour moi.', reviewer: 'Antoine, visage Rond', shape: 'Rond' },
+  'oakley-holbrook': { rating: 5, review: 'Parfait pour un look sport-chic. Léger et très confortable.', reviewer: 'Romain, visage Carré', shape: 'Carré' },
+  'lindberg-air-titanium': { rating: 5, review: 'Le summum de la légèreté. On oublie qu\'on les porte.', reviewer: 'Claire, visage Ovale', shape: 'Ovale' },
+  'garrett-leight': { rating: 5, review: 'Design unique, vraiment différent de ce qu\'on trouve partout.', reviewer: 'Théo, visage Diamant', shape: 'Diamant' },
+  'warby-parker-beckett': { rating: 4, review: 'Excellent rapport qualité-prix. Idéal pour commencer avec des lunettes de qualité.', reviewer: 'Emma, visage Rond', shape: 'Rond' },
+  'celine-cl50008i': { rating: 5, review: 'Féminin et chic, exactement ce que je voulais pour affiner mon visage.', reviewer: 'Jade, visage Triangulaire', shape: 'Triangulaire' },
+  'mykita-mylon': { rating: 5, review: 'Des lunettes d\'architecte. Conversation guaranteed à chaque sortie.', reviewer: 'Nicolas, visage Carré', shape: 'Carré' },
+  'oliver-peoples-ov5183': { rating: 5, review: 'Classique mais avec du caractère. Je ne les enlève plus.', reviewer: 'Sophie, visage Ovale', shape: 'Ovale' },
+  'prada-pr17wv': { rating: 4, review: 'Très belles mais nécessitent un ajustement chez l\'opticien.', reviewer: 'Camille, visage Diamant', shape: 'Diamant' },
+  'moscot-lemtosh': { rating: 5, review: 'New-yorkais à souhait. Polyvalent, je les porte en toutes occasions.', reviewer: 'Hugo, visage Rond', shape: 'Rond' },
+};
+
 export default function Lunettes() {
   const [selectedShape, setSelectedShape] = useState<FaceShape | null>(null);
   const [selectedStyle, setSelectedStyle] = useState<FrameStyle | null>(null);
   const [priceMax, setPriceMax] = useState(500);
   const [showFilters, setShowFilters] = useState(false);
+  const [favorites, setFavorites] = useState<Set<string>>(new Set());
+  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [, navigate] = useLocation();
+
+  // Load favorites from localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem('myshape-favorites');
+    if (saved) setFavorites(new Set(JSON.parse(saved)));
+  }, []);
+
+  // Save favorites to localStorage
+  const toggleFavorite = (frameId: string) => {
+    const newFavorites = new Set(favorites);
+    if (newFavorites.has(frameId)) {
+      newFavorites.delete(frameId);
+    } else {
+      newFavorites.add(frameId);
+    }
+    setFavorites(newFavorites);
+    localStorage.setItem('myshape-favorites', JSON.stringify(Array.from(newFavorites)));
+  };
 
   const filteredFrames = useMemo(() => {
     return frames.filter((frame) => {
+      if (showFavoritesOnly && !favorites.has(frame.id)) return false;
       if (selectedShape && !frame.compatibleShapes.includes(selectedShape)) return false;
       if (selectedStyle && frame.style !== selectedStyle) return false;
       if (frame.price > priceMax) return false;
       return true;
     });
-  }, [selectedShape, selectedStyle, priceMax]);
+  }, [selectedShape, selectedStyle, priceMax, favorites, showFavoritesOnly]);
 
   const clearFilters = () => {
     setSelectedShape(null);
     setSelectedStyle(null);
     setPriceMax(500);
+    setShowFavoritesOnly(false);
   };
 
-  const hasFilters = selectedShape || selectedStyle || priceMax < 500;
+  const hasFilters = selectedShape || selectedStyle || priceMax < 500 || showFavoritesOnly;
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#FAFAF8' }}>
@@ -147,6 +184,24 @@ export default function Lunettes() {
                     </button>
                   ))}
                 </div>
+              </div>
+
+              {/* Favorites filter */}
+              <div>
+                <button
+                  onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
+                  className={`w-full px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 flex items-center gap-2 ${
+                    showFavoritesOnly ? 'font-semibold' : ''
+                  }`}
+                  style={{
+                    backgroundColor: showFavoritesOnly ? '#E8F5F0' : 'transparent',
+                    color: showFavoritesOnly ? '#0D6E4F' : '#4B5563',
+                    fontFamily: "'DM Sans', sans-serif",
+                  }}
+                >
+                  <Heart className="w-4 h-4" fill={showFavoritesOnly ? 'currentColor' : 'none'} />
+                  Coups de cœur ({favorites.size})
+                </button>
               </div>
 
               {/* Style filter */}
@@ -379,6 +434,12 @@ export default function Lunettes() {
                   Effacer les filtres
                 </button>
               </div>
+            ) : filteredFrames.length === 0 && showFavoritesOnly ? (
+              <div className="text-center py-12">
+                <Heart className="w-12 h-12 mx-auto mb-3" style={{ color: '#D0D0D0' }} />
+                <p className="text-base font-medium" style={{ color: '#1C2B26', fontFamily: "'Playfair Display', Georgia, serif" }}>Aucun coup de cœur pour l'instant</p>
+                <p className="text-sm" style={{ color: '#6B7280', fontFamily: "'DM Sans', sans-serif" }}>Cliquez sur ♡ pour en ajouter</p>
+              </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
                 {filteredFrames.map((frame) => (
@@ -408,7 +469,18 @@ export default function Lunettes() {
                           </span>
                         ))}
                       </div>
-                      <div className="absolute top-3 right-3">
+                      <div className="absolute top-3 right-3 flex flex-col gap-2">
+                        <button
+                          onClick={() => toggleFavorite(frame.id)}
+                          className="p-1.5 rounded-lg bg-white/90 hover:bg-white transition-all"
+                          aria-label="Ajouter aux favoris"
+                        >
+                          <Heart
+                            className="w-4 h-4"
+                            fill={favorites.has(frame.id) ? '#E91E63' : 'none'}
+                            color={favorites.has(frame.id) ? '#E91E63' : '#9CA3AF'}
+                          />
+                        </button>
                         <span
                           className="text-xs px-2 py-0.5 rounded-full capitalize"
                           style={{ backgroundColor: 'rgba(15, 26, 23, 0.08)', color: '#1C2B26', fontFamily: "'DM Sans', sans-serif" }}
@@ -444,11 +516,35 @@ export default function Lunettes() {
                       </div>
 
                       <p
-                        className="text-xs leading-relaxed mb-4 line-clamp-2"
+                        className="text-xs leading-relaxed mb-3 line-clamp-2"
                         style={{ color: '#6B7280', fontFamily: "'DM Sans', sans-serif" }}
                       >
                         {frame.description}
                       </p>
+
+                      {frameReviews[frame.id] && (
+                        <div className="mb-3 pb-3 border-b border-gray-100">
+                          <div className="flex items-center gap-1 mb-1">
+                            {[...Array(5)].map((_, i) => (
+                              <span key={i} style={{ color: i < frameReviews[frame.id].rating ? '#1A1A1A' : '#D0D0D0' }}>
+                                {i < frameReviews[frame.id].rating ? '★' : '☆'}
+                              </span>
+                            ))}
+                          </div>
+                          <p
+                            className="text-xs italic leading-snug mb-1"
+                            style={{ color: '#6B6B6B', fontFamily: "'DM Sans', sans-serif" }}
+                          >
+                            "{frameReviews[frame.id].review}"
+                          </p>
+                          <p
+                            className="text-xs"
+                            style={{ color: '#9CA3AF', fontFamily: "'DM Sans', sans-serif" }}
+                          >
+                            — {frameReviews[frame.id].reviewer}
+                          </p>
+                        </div>
+                      )}
 
                       <p
                         className="text-xs mb-4"

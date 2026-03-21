@@ -99,20 +99,19 @@ export default function Home() {
               IA de morphologie faciale · 100% gratuit
             </div>
 
-            {/* Headline */}
+            {/* Main headline */}
             <h1
-              className="text-5xl sm:text-6xl lg:text-7xl font-bold leading-[1.05] mb-6 animate-fade-in-up delay-100"
-              style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#1C2B26' }}
+              className="font-light mb-6"
+              style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#1C2B26', lineHeight: 1.0, fontSize: 'clamp(44px, 8vw, 80px)', letterSpacing: '-0.03em' }}
             >
-              Trouvez les lunettes{' '}
-              <em className="not-italic" style={{ color: '#0D6E4F' }}>faites</em>{' '}
-              pour votre visage
+              Trouvez les lunettes
+              <span style={{ color: '#0D6E4F' }}> faites</span> pour votre visage
             </h1>
 
             {/* Subheadline */}
             <p
-              className="text-lg sm:text-xl leading-relaxed mb-8 animate-fade-in-up delay-200"
-              style={{ color: '#4B5563', fontFamily: "'DM Sans', sans-serif", maxWidth: '520px' }}
+              className="leading-relaxed mb-8 animate-fade-in-up delay-200"
+              style={{ color: '#6B6B6B', fontFamily: "'DM Sans', sans-serif", maxWidth: '560px', fontSize: '18px', fontWeight: 300, lineHeight: 1.6 }}
             >
               Notre IA analyse votre morphologie faciale en temps réel et vous recommande les montures parfaites. Essayage en réalité augmentée, directement depuis votre caméra.
             </p>
@@ -205,15 +204,18 @@ export default function Home() {
       <section id="how-it-works" className="py-24 lg:py-32" style={{ backgroundColor: '#FAFAF8' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16 reveal">
-            <p
-              className="text-sm font-semibold uppercase tracking-widest mb-3"
-              style={{ color: '#0D6E4F', fontFamily: "'DM Sans', sans-serif" }}
-            >
-              Comment ça marche
-            </p>
+            <div className="inline-flex flex-col items-center mb-4">
+              <p
+                className="text-sm font-semibold uppercase tracking-widest mb-3"
+                style={{ color: '#0D6E4F', fontFamily: "'DM Sans', sans-serif" }}
+              >
+                Comment ça marche
+              </p>
+              <div style={{ width: '48px', height: '1px', backgroundColor: '#E0E0DC' }} />
+            </div>
             <h2
-              className="text-4xl lg:text-5xl font-bold"
-              style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#1C2B26' }}
+              className="font-semibold"
+              style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#1C2B26', fontSize: 'clamp(32px, 6vw, 52px)' }}
             >
               Trois étapes, une minute
             </h2>

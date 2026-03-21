@@ -469,6 +469,13 @@ export default function Essayer() {
                       <Camera className="w-5 h-5" />
                       {loadingStep || 'Activer la caméra'}
                     </button>
+                    <div className="mt-4">
+                      <p className="text-xs mb-3" style={{ color: '#6B7280', fontFamily: "'DM Sans', sans-serif" }}>ou</p>
+                      <label className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium border border-[#1A1A1A] text-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white transition-all cursor-pointer">
+                        <span>📁 Uploader une photo</span>
+                        <input type="file" accept="image/*" className="hidden" />
+                      </label>
+                    </div>
                   </div>
                 )}
 
