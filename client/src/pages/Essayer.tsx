@@ -31,8 +31,14 @@ export default function Essayer() {
   const faceMeshRef = useRef<any>(null);
   const cameraRef = useRef<any>(null);
   const animFrameRef = useRef<number>(0);
+  const appStateRef = useRef<AppState>('idle');
 
   const [appState, setAppState] = useState<AppState>('idle');
+
+  // Synchroniser la référence avec l'état
+  useEffect(() => {
+    appStateRef.current = appState;
+  }, [appState]);
   const [scanProgress, setScanProgress] = useState(0);
   const [result, setResult] = useState<ClassificationResult | null>(null);
   const [selectedFrame, setSelectedFrame] = useState<Frame | null>(null);
@@ -194,7 +200,7 @@ export default function Essayer() {
         drawLandmarks(landmarks);
 
         // Analyser après 30 frames stables
-        if (frameCount >= 30 && appState === 'scanning') {
+        if (frameCount >= 30 && appStateRef.current === 'scanning') {
           analysisComplete = true;
           setScanProgress(100);
           setTimeout(() => {
@@ -303,10 +309,12 @@ export default function Essayer() {
   };
 
   const finishAnalysis = (classification: ClassificationResult, landmarks: any[] | null) => {
+    console.log('Analysis complete:', classification.shape);
     setResult(classification);
     const recs = framesByShape(classification.shape);
     setRecommendedFrames(recs.length > 0 ? recs : frames.slice(0, 6));
     setAppState('result');
+    appStateRef.current = 'result';
 
     // Afficher la modal email après 3 secondes
     setTimeout(() => {
