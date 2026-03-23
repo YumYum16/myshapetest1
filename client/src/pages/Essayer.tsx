@@ -120,20 +120,8 @@ export default function Essayer() {
     try {
       setAppState('analyzing');
 
-      // Upload to get temporary URL
-      const formData = new FormData();
-      formData.append('file', blob);
-
-      const uploadResponse = await fetch('/api/upload-temp', {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (!uploadResponse.ok) {
-        throw new Error('Upload failed');
-      }
-
-      const { url } = await uploadResponse.json();
+      // Create a blob URL for local analysis (no backend upload needed)
+      const url = URL.createObjectURL(blob);
 
       // Analyze with LLM
       const analysis = await analyzeFaceWithLLM(url);
@@ -156,6 +144,9 @@ export default function Essayer() {
       setCurrentCardIndex(0);
       setAppState('swiping');
       stopCamera();
+      
+      // Clean up blob URL
+      URL.revokeObjectURL(url);
     } catch (err) {
       console.error('Analysis error:', err);
       setErrorMessage('Erreur lors de l\'analyse. Veuillez réessayer.');
