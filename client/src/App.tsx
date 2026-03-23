@@ -8,6 +8,8 @@ import NotFound from "@/pages/NotFound";
 import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
+import CustomCursor from "./components/CustomCursor";
+import LoadingScreen from "./components/LoadingScreen";
 import Home from "./pages/Home";
 import Essayer from "./pages/Essayer";
 import Morphologies from "./pages/Morphologies";
@@ -31,7 +33,9 @@ function Router() {
 function App() {
   return (
     <ErrorBoundary>
-      <ThemeProvider defaultTheme="light">
+      <ThemeProvider defaultTheme="light" switchable>
+        <LoadingScreen />
+        <CustomCursor />
         <TooltipProvider>
           <Toaster />
           <Router />

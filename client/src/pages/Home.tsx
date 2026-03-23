@@ -8,6 +8,7 @@ import { ArrowRight, Eye, Shield, Camera, Cpu, Glasses, Star, ChevronRight, Chec
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import FaceShapeCard from '@/components/FaceShapeCard';
+import { useParallax } from '@/hooks/useParallax';
 import type { FaceShape } from '@/lib/frames-data';
 
 // Scroll reveal hook
@@ -63,6 +64,9 @@ const testimonials = [
 export default function Home() {
   useScrollReveal();
   const [activeStep, setActiveStep] = useState(0);
+  const parallaxBg = useParallax(0.2);
+  const parallaxHeadline = useParallax(0.9);
+  const parallaxGlasses = useParallax(0.4);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -77,8 +81,8 @@ export default function Home() {
 
       {/* ===== HERO ===== */}
       <section className="relative min-h-screen flex items-center overflow-hidden pt-16">
-        {/* Background image */}
-        <div className="absolute inset-0 z-0">
+        {/* Background image with parallax */}
+        <div className="absolute inset-0 z-0" ref={parallaxBg}>
           <img
             src="https://d2xsxph8kpxj0f.cloudfront.net/310519663429713797/XHqiHCtKYoHGBxHprzKY3y/hero-bg-Ft7XEU59qGjWAvJSPZK7ou.webp"
             alt=""
@@ -88,7 +92,7 @@ export default function Home() {
           <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, transparent 60%, rgba(250,250,248,1) 100%)' }} />
         </div>
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32" ref={parallaxHeadline}>
           <div className="max-w-2xl">
             {/* Badge */}
             <div

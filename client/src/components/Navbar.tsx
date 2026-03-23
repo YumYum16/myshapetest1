@@ -4,12 +4,14 @@
 
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'wouter';
-import { Menu, X, Eye } from 'lucide-react';
+import { Menu, X, Eye, Sun, Moon } from 'lucide-react';
+import { useTheme } from '@/contexts/ThemeContext';
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [location] = useLocation();
+  const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -86,8 +88,19 @@ export default function Navbar() {
               ))}
             </nav>
 
-            {/* Desktop CTA */}
+            {/* Dark mode toggle + Desktop CTA */}
             <div className="hidden lg:flex items-center gap-3">
+              <button
+                onClick={toggleTheme}
+                className="p-2 rounded-lg transition-colors duration-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+                aria-label="Toggle dark mode"
+              >
+                {theme === 'light' ? (
+                  <Moon className="w-5 h-5" style={{ color: '#1C2B26' }} />
+                ) : (
+                  <Sun className="w-5 h-5" style={{ color: '#F0F0EE' }} />
+                )}
+              </button>
               <Link
                 href="/essayer"
                 className="btn-shimmer inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold text-white transition-all duration-200 hover:shadow-lg hover:scale-105"
@@ -98,15 +111,29 @@ export default function Navbar() {
               </Link>
             </div>
 
-            {/* Mobile menu button */}
-            <button
-              onClick={() => setMenuOpen(!menuOpen)}
-              className="lg:hidden p-2 rounded-lg transition-colors"
-              style={{ color: '#1C2B26' }}
-              aria-label="Menu"
-            >
-              {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </button>
+            {/* Dark mode toggle + Mobile menu button */}
+            <div className="lg:hidden flex items-center gap-2">
+              <button
+                onClick={toggleTheme}
+                className="p-2 rounded-lg transition-colors duration-300"
+                style={{ color: theme === 'light' ? '#1C2B26' : '#F0F0EE' }}
+                aria-label="Toggle dark mode"
+              >
+                {theme === 'light' ? (
+                  <Moon className="w-5 h-5" />
+                ) : (
+                  <Sun className="w-5 h-5" />
+                )}
+              </button>
+              <button
+                onClick={() => setMenuOpen(!menuOpen)}
+                className="p-2 rounded-lg transition-colors"
+                style={{ color: theme === 'light' ? '#1C2B26' : '#F0F0EE' }}
+                aria-label="Menu"
+              >
+                {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              </button>
+            </div>
           </div>
         </div>
 

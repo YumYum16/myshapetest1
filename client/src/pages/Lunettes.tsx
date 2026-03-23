@@ -7,6 +7,7 @@ import { Filter, SlidersHorizontal, ExternalLink, Eye, X, Camera, ChevronDown, H
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import GlassesSVG from '@/components/GlassesSVG';
+import FrameBadges from '@/components/FrameBadges';
 import { frames } from '@/lib/frames-data';
 import type { FaceShape, FrameStyle } from '@/lib/frames-data';
 
@@ -458,16 +459,8 @@ export default function Lunettes() {
                         width={180}
                       />
                       {/* Badges */}
-                      <div className="absolute top-3 left-3 flex flex-wrap gap-1">
-                        {frame.compatibleShapes.slice(0, 2).map((shape) => (
-                          <span
-                            key={shape}
-                            className="text-xs px-2 py-0.5 rounded-full font-medium"
-                            style={{ backgroundColor: '#E8F5F0', color: '#0D6E4F', fontFamily: "'DM Sans', sans-serif" }}
-                          >
-                            {shape}
-                          </span>
-                        ))}
+                      <div className="absolute top-3 left-3">
+                        <FrameBadges frameId={frame.id} frameName={frame.name} />
                       </div>
                       <div className="absolute top-3 right-3 flex flex-col gap-2">
                         <button
