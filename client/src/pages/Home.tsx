@@ -247,7 +247,7 @@ export default function Home() {
             ].map((item, index) => (
               <div
                 key={index}
-                className={`reveal relative ${index === activeStep ? 'scale-105' : ''} transition-transform duration-500`}
+                className={`relative ${index === activeStep ? 'scale-105' : ''} transition-transform duration-500`}
                 style={{ transitionDelay: `${index * 0.1}s` }}
               >
                 {/* Step number background */}
