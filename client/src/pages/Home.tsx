@@ -9,28 +9,10 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import FaceShapeCard from '@/components/FaceShapeCard';
 import { useParallax } from '@/hooks/useParallax';
+import { useScrollReveal } from '@/hooks/useScrollReveal';
 import type { FaceShape } from '@/lib/frames-data';
 
-// Scroll reveal hook
-function useScrollReveal() {
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-          }
-        });
-      },
-      { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
-    );
 
-    const elements = document.querySelectorAll('.reveal');
-    elements.forEach((el) => observer.observe(el));
-
-    return () => observer.disconnect();
-  }, []);
-}
 
 const FACE_SHAPES: FaceShape[] = ['Ovale', 'Carré', 'Rond', 'Triangulaire', 'Diamant'];
 
@@ -207,7 +189,7 @@ export default function Home() {
       {/* ===== HOW IT WORKS ===== */}
       <section id="how-it-works" className="py-24 lg:py-32" style={{ backgroundColor: '#FAFAF8' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16 reveal">
+          <div className="text-center mb-16" data-animate>
             <div className="inline-flex flex-col items-center mb-4">
               <p
                 className="text-sm font-semibold uppercase tracking-widest mb-3"
@@ -308,7 +290,7 @@ export default function Home() {
             ))}
           </div>
 
-          <div className="text-center mt-12 reveal">
+          <div className="text-center mt-12" data-animate>
             <Link
               href="/essayer"
               className="btn-shimmer inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold text-white transition-all duration-200 hover:shadow-lg hover:scale-105"
@@ -330,7 +312,7 @@ export default function Home() {
               { value: '4.8/5', label: 'Satisfaction utilisateurs', icon: '⭐' },
               { value: '50+', label: 'Montures disponibles', icon: '👓' },
             ].map((stat, index) => (
-              <div key={index} className="reveal">
+              <div key={index} className="reveal" data-animate>
                 <div className="text-3xl mb-2">{stat.icon}</div>
                 <div
                   className="text-4xl lg:text-5xl font-bold mb-2"
@@ -353,7 +335,7 @@ export default function Home() {
       {/* ===== FACE SHAPES ===== */}
       <section className="py-24 lg:py-32" style={{ backgroundColor: '#FAFAF8' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16 reveal">
+          <div className="text-center mb-16" data-animate>
             <p
               className="text-sm font-semibold uppercase tracking-widest mb-3"
               style={{ color: '#0D6E4F', fontFamily: "'DM Sans', sans-serif" }}
@@ -376,13 +358,13 @@ export default function Home() {
 
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 lg:gap-6">
             {FACE_SHAPES.map((shape, index) => (
-              <div key={shape} className="reveal" style={{ transitionDelay: `${index * 0.08}s` }}>
+              <div key={shape} className="reveal" data-animate style={{ transitionDelay: `${index * 0.08}s` }}>
                 <FaceShapeCard shape={shape} />
               </div>
             ))}
           </div>
 
-          <div className="text-center mt-12 reveal">
+          <div className="text-center mt-12" data-animate>
             <Link
               href="/morphologies"
               className="inline-flex items-center gap-2 text-sm font-semibold transition-colors hover:opacity-80"
@@ -399,7 +381,7 @@ export default function Home() {
       <section className="py-24" style={{ backgroundColor: '#F0EDE8' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="reveal">
+            <div className="reveal" data-animate>
               <p
                 className="text-sm font-semibold uppercase tracking-widest mb-3"
                 style={{ color: '#0D6E4F', fontFamily: "'DM Sans', sans-serif" }}
@@ -447,7 +429,7 @@ export default function Home() {
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
-            <div className="reveal">
+            <div className="reveal" data-animate>
               <div className="rounded-2xl overflow-hidden shadow-2xl">
                 <img
                   src="https://d2xsxph8kpxj0f.cloudfront.net/310519663429713797/XHqiHCtKYoHGBxHprzKY3y/glasses-collection-8Q8PhXkZCf73Gts8yUBC3k.webp"
@@ -463,7 +445,7 @@ export default function Home() {
       {/* ===== TESTIMONIALS ===== */}
       <section className="py-24 lg:py-32" style={{ backgroundColor: '#FAFAF8' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16 reveal">
+          <div className="text-center mb-16" data-animate>
             <p
               className="text-sm font-semibold uppercase tracking-widest mb-3"
               style={{ color: '#0D6E4F', fontFamily: "'DM Sans', sans-serif" }}
@@ -529,7 +511,7 @@ export default function Home() {
       {/* ===== FINAL CTA ===== */}
       <section className="py-24" style={{ backgroundColor: '#0F1A17' }}>
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="reveal">
+          <div className="reveal" data-animate>
             <div
               className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold mb-6"
               style={{ backgroundColor: 'rgba(13, 110, 79, 0.3)', color: '#4ade80', fontFamily: "'DM Sans', sans-serif" }}

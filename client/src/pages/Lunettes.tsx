@@ -8,6 +8,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import GlassesSVG from '@/components/GlassesSVG';
 import FrameBadges from '@/components/FrameBadges';
+import CommentsSection from '@/components/CommentsSection';
 import { frames } from '@/lib/frames-data';
 import type { FaceShape, FrameStyle } from '@/lib/frames-data';
 
@@ -572,6 +573,9 @@ export default function Lunettes() {
                           {frame.affiliate}
                         </a>
                       </div>
+
+                      {/* Comments section */}
+                      <CommentsSection frameId={frame.id} frameName={frame.name} />
                     </div>
                   </div>
                 ))}

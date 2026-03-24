@@ -406,3 +406,44 @@
 .glasses-3d.animate {
   animation: glassesFloat 4s ease-in-out infinite;
 }
+
+/* Bidirectional scroll animations (Apple.com style) */
+[data-animate] {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 600ms ease-out, transform 600ms ease-out;
+}
+
+[data-animate].animate-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+[data-animate].animate-out {
+  opacity: 0;
+  transform: translateY(-30px);
+  transition: opacity 400ms ease-in, transform 400ms ease-in;
+}
+
+/* Stagger delays for grid cards */
+[data-animate]:nth-child(1) { transition-delay: 0ms; }
+[data-animate]:nth-child(2) { transition-delay: 80ms; }
+[data-animate]:nth-child(3) { transition-delay: 160ms; }
+[data-animate]:nth-child(4) { transition-delay: 240ms; }
+[data-animate]:nth-child(5) { transition-delay: 320ms; }
+[data-animate]:nth-child(6) { transition-delay: 400ms; }
+[data-animate]:nth-child(7) { transition-delay: 480ms; }
+[data-animate]:nth-child(8) { transition-delay: 560ms; }
+[data-animate]:nth-child(9) { transition-delay: 640ms; }
+[data-animate]:nth-child(10) { transition-delay: 720ms; }
+[data-animate]:nth-child(11) { transition-delay: 800ms; }
+[data-animate]:nth-child(12) { transition-delay: 880ms; }
+
+/* Respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  [data-animate] {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+    transition: none !important;
+  }
+}
