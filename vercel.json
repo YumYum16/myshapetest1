@@ -1,4 +1,13 @@
 {
-  "builds": [{ "src": "server/index.ts", "use": "@vercel/node" }],
-  "routes": [{ "src": "/(.*)", "dest": "server/index.ts" }]
+  "buildCommand": "pnpm run build",
+  "outputDirectory": "dist",
+  "framework": "vite",
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
 }
