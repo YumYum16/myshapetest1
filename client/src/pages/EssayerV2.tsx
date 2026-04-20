@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { useMediaPipeFaceDetection, FaceMetrics, MorphologyResult } from '@/hooks/useMediaPipeFaceDetection';
+import { useSimpleFaceDetection, FaceMetrics, MorphologyResult } from '@/hooks/useSimpleFaceDetection';
 import { Button } from '@/components/ui/button';
 import { AlertCircle, Camera, Loader2, Check, X } from 'lucide-react';
 
@@ -63,8 +63,8 @@ export default function EssayerV2() {
   const [confirmGlasses, setConfirmGlasses] = useState(false);
   const [cameraError, setCameraError] = useState<string | null>(null);
 
-  const { metrics, landmarks, isDetecting, error, detectMorphology } =
-    useMediaPipeFaceDetection(videoRef as React.RefObject<HTMLVideoElement>);
+  const { metrics, isDetecting, error, detectMorphology } =
+    useSimpleFaceDetection(videoRef as React.RefObject<HTMLVideoElement>);
 
   // Initialize camera with improved error handling
   useEffect(() => {
@@ -127,9 +127,9 @@ export default function EssayerV2() {
     };
   }, []);
 
-  // Draw face landmarks and guide circle
+  // Draw guide circle on canvas
   useEffect(() => {
-    if (!canvasRef.current || !videoRef.current || !landmarks) return;
+    if (!canvasRef.current || !videoRef.current) return;
 
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
@@ -137,6 +137,8 @@ export default function EssayerV2() {
 
     const width = videoRef.current.videoWidth;
     const height = videoRef.current.videoHeight;
+
+    if (width === 0 || height === 0) return;
 
     canvas.width = width;
     canvas.height = height;
@@ -153,34 +155,12 @@ export default function EssayerV2() {
     ctx.stroke();
     ctx.setLineDash([]);
 
-    // Draw landmarks
-    landmarks.forEach((lm: any, index: number) => {
-      const x = lm.x * width;
-      const y = lm.y * height;
-
-      // Draw key landmarks
-      if ([33, 263, 152, 10, 234, 454].includes(index)) {
-        ctx.fillStyle = '#0D6E4F';
-        ctx.beginPath();
-        ctx.arc(x, y, 4, 0, Math.PI * 2);
-        ctx.fill();
-      }
-    });
-
-    // Draw face outline (connecting key points)
-    const keyPoints = [10, 234, 152, 454].map((idx) => landmarks[idx]);
-    if (keyPoints.length === 4) {
-      ctx.strokeStyle = '#0D6E4F';
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(keyPoints[0].x * width, keyPoints[0].y * height);
-      ctx.lineTo(keyPoints[1].x * width, keyPoints[1].y * height);
-      ctx.lineTo(keyPoints[2].x * width, keyPoints[2].y * height);
-      ctx.lineTo(keyPoints[3].x * width, keyPoints[3].y * height);
-      ctx.closePath();
-      ctx.stroke();
-    }
-  }, [landmarks]);
+    // Draw guide text
+    ctx.fillStyle = '#0D6E4F';
+    ctx.font = 'bold 16px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Positionnez votre visage ici', width / 2, height / 2 + 180);
+  }, [cameraActive]);
 
   const handleAnalyze = () => {
     if (!metrics) return;
