@@ -105,7 +105,7 @@ export default function Home() {
             {/* CTA */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 animate-fade-in-up delay-300">
               <Link
-                href="/essayer"
+                href="/essayer-v2"
                 className="btn-shimmer inline-flex items-center gap-2.5 px-7 py-4 rounded-xl text-base font-semibold text-white transition-all duration-200 hover:shadow-xl hover:scale-105 hover:-translate-y-0.5"
                 style={{ backgroundColor: '#0D6E4F', fontFamily: "'DM Sans', sans-serif" }}
               >
@@ -292,7 +292,7 @@ export default function Home() {
 
           <div className="text-center mt-12" data-animate>
             <Link
-              href="/essayer"
+              href="/essayer-v2"
               className="btn-shimmer inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold text-white transition-all duration-200 hover:shadow-lg hover:scale-105"
               style={{ backgroundColor: '#0D6E4F', fontFamily: "'DM Sans', sans-serif" }}
             >
@@ -534,7 +534,7 @@ export default function Home() {
             </p>
 
             <Link
-              href="/essayer"
+              href="/essayer-v2"
               className="btn-shimmer inline-flex items-center gap-3 px-8 py-4 rounded-xl text-base font-semibold text-white transition-all duration-200 hover:shadow-2xl hover:scale-105"
               style={{ backgroundColor: '#0D6E4F', fontFamily: "'DM Sans', sans-serif" }}
             >
@@ -559,7 +559,7 @@ export default function Home() {
         style={{ background: 'linear-gradient(to top, rgba(250,250,248,1) 70%, transparent)' }}
       >
         <Link
-          href="/essayer"
+          href="/essayer-v2"
           className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl text-sm font-semibold text-white shadow-lg"
           style={{ backgroundColor: '#0D6E4F', fontFamily: "'DM Sans', sans-serif" }}
         >

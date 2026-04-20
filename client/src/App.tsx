@@ -12,6 +12,7 @@ import CustomCursor from "./components/CustomCursor";
 import LoadingScreen from "./components/LoadingScreen";
 import Home from "./pages/Home";
 import Essayer from "./pages/Essayer";
+import EssayerV2 from "./pages/EssayerV2";
 import Morphologies from "./pages/Morphologies";
 import Lunettes from "./pages/Lunettes";
 import APropos from "./pages/APropos";
@@ -21,6 +22,7 @@ function Router() {
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/essayer" component={Essayer} />
+      <Route path="/essayer-v2" component={EssayerV2} />
       <Route path="/morphologies" component={Morphologies} />
       <Route path="/lunettes" component={Lunettes} />
       <Route path="/a-propos" component={APropos} />
