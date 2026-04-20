@@ -61,31 +61,59 @@ export default function EssayerV2() {
   const [cameraActive, setCameraActive] = useState(false);
   const [hasGlasses, setHasGlasses] = useState(false);
   const [confirmGlasses, setConfirmGlasses] = useState(false);
+  const [cameraError, setCameraError] = useState<string | null>(null);
 
   const { metrics, landmarks, isDetecting, error, detectMorphology } =
     useMediaPipeFaceDetection(videoRef as React.RefObject<HTMLVideoElement>);
 
-  // Initialize camera
+  // Initialize camera with improved error handling
   useEffect(() => {
     const initCamera = async () => {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: {
-            facingMode: 'user',
-            width: { ideal: 1280 },
-            height: { ideal: 720 },
-          },
-        });
+        setCameraError(null);
+        
+        // Try with ideal constraints first
+        let stream: MediaStream | null = null;
+        
+        try {
+          stream = await navigator.mediaDevices.getUserMedia({
+            video: {
+              facingMode: 'user',
+              width: { ideal: 1280 },
+              height: { ideal: 720 },
+            },
+          });
+        } catch (constraintError) {
+          console.warn('Ideal constraints failed, trying basic camera');
+          // Fallback: try without specific constraints
+          stream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: 'user' },
+          });
+        }
 
-        if (videoRef.current) {
+        if (stream && videoRef.current) {
           videoRef.current.srcObject = stream;
           videoRef.current.onloadedmetadata = () => {
-            videoRef.current?.play();
+            videoRef.current?.play().catch((err) => {
+              console.error('Failed to play video:', err);
+              setCameraError('Impossible de lancer la vidéo');
+            });
             setCameraActive(true);
           };
         }
-      } catch (err) {
+      } catch (err: any) {
         console.error('Camera error:', err);
+        
+        // Provide user-friendly error messages
+        if (err.name === 'NotAllowedError') {
+          setCameraError('Accès à la caméra refusé. Veuillez autoriser l\'accès dans les paramètres du navigateur.');
+        } else if (err.name === 'NotFoundError') {
+          setCameraError('Aucune caméra trouvée sur cet appareil.');
+        } else if (err.name === 'NotReadableError') {
+          setCameraError('La caméra est déjà utilisée par une autre application.');
+        } else {
+          setCameraError('Erreur lors de l\'accès à la caméra: ' + err.message);
+        }
       }
     };
 
@@ -209,35 +237,48 @@ export default function EssayerV2() {
 
             {/* Camera Container */}
             <div className="relative bg-[#F0F0EE] dark:bg-[#1A2622] rounded-2xl overflow-hidden aspect-video">
-              <video
-                ref={videoRef}
-                className="w-full h-full object-cover"
-                playsInline
-              />
-              <canvas
-                ref={canvasRef}
-                className="absolute inset-0 w-full h-full"
-              />
+              {cameraActive ? (
+                <>
+                  <video
+                    ref={videoRef}
+                    className="w-full h-full object-cover"
+                    playsInline
+                  />
+                  <canvas
+                    ref={canvasRef}
+                    className="absolute inset-0 w-full h-full"
+                  />
+                </>
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-gray-200 dark:bg-gray-800">
+                  <div className="text-center">
+                    <Loader2 className="w-8 h-8 animate-spin mx-auto mb-2 text-gray-600 dark:text-gray-400" />
+                    <p className="text-gray-600 dark:text-gray-400">Initialisation de la caméra...</p>
+                  </div>
+                </div>
+              )}
 
               {/* Status Overlay */}
-              <div className="absolute top-4 left-4 bg-black/50 text-white px-4 py-2 rounded-lg flex items-center gap-2">
-                {isDetecting ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    <span>Analyse en cours...</span>
-                  </>
-                ) : metrics ? (
-                  <>
-                    <Check className="w-4 h-4 text-green-400" />
-                    <span>Visage détecté</span>
-                  </>
-                ) : (
-                  <>
-                    <Camera className="w-4 h-4" />
-                    <span>En attente...</span>
-                  </>
-                )}
-              </div>
+              {cameraActive && (
+                <div className="absolute top-4 left-4 bg-black/50 text-white px-4 py-2 rounded-lg flex items-center gap-2">
+                  {isDetecting ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>Analyse en cours...</span>
+                    </>
+                  ) : metrics ? (
+                    <>
+                      <Check className="w-4 h-4 text-green-400" />
+                      <span>Visage détecté</span>
+                    </>
+                  ) : (
+                    <>
+                      <Camera className="w-4 h-4" />
+                      <span>En attente...</span>
+                    </>
+                  )}
+                </div>
+              )}
 
               {/* Glasses Detection */}
               {metrics?.hasGlasses && (
@@ -247,7 +288,14 @@ export default function EssayerV2() {
               )}
             </div>
 
-            {/* Error Message */}
+            {/* Error Messages */}
+            {cameraError && (
+              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 flex items-start gap-3">
+                <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
+                <p className="text-red-700 dark:text-red-300">{cameraError}</p>
+              </div>
+            )}
+
             {error && (
               <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 flex items-start gap-3">
                 <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
@@ -275,7 +323,7 @@ export default function EssayerV2() {
             {/* Action Button */}
             <Button
               onClick={handleAnalyze}
-              disabled={!metrics || isDetecting}
+              disabled={!metrics || isDetecting || !cameraActive}
               className="w-full bg-[#0D6E4F] hover:bg-[#0a5540] text-white h-12 text-lg"
             >
               {isDetecting ? 'Analyse en cours...' : 'Analyser mon visage'}

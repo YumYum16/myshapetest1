@@ -38,21 +38,40 @@ const initializeFaceLandmarker = async () => {
 
   isInitializing = true;
   initPromise = (async () => {
+    let vision: any;
     try {
-      const vision = await FilesetResolver.forVisionTasks(
+      vision = await FilesetResolver.forVisionTasks(
         'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.34/wasm'
       );
       faceLandmarker = await FaceLandmarker.createFromOptions(vision, {
         baseOptions: {
           modelAssetPath:
-            'https://storage.googleapis.com/mediapipe-models/image_segmenter/face_landmarker_v2_with_blendshapes/float16/1/face_landmarker_v2_with_blendshapes.task',
+            'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker_v2_with_blendshapes/float16/1/face_landmarker_v2_with_blendshapes.task',
         },
         runningMode: 'VIDEO',
         numFaces: 1,
       });
     } catch (error) {
       console.error('Failed to initialize FaceLandmarker:', error);
-      throw error;
+      // Fallback: use a simpler model URL
+      try {
+        if (!vision) {
+          vision = await FilesetResolver.forVisionTasks(
+            'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.34/wasm'
+          );
+        }
+        faceLandmarker = await FaceLandmarker.createFromOptions(vision, {
+          baseOptions: {
+            modelAssetPath:
+              'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.34/wasm/face_landmarker.task',
+          },
+          runningMode: 'VIDEO',
+          numFaces: 1,
+        });
+      } catch (fallbackError) {
+        console.error('Fallback model also failed:', fallbackError);
+        throw error;
+      }
     }
   })();
 
