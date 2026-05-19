@@ -1,8 +1,10 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useSimpleFaceDetection, FaceMetrics, MorphologyResult } from '@/hooks/useSimpleFaceDetection';
+import { useFavorites } from '@/hooks/useFavorites';
 import { Button } from '@/components/ui/button';
-import { AlertCircle, Camera, Loader2, Check, X } from 'lucide-react';
+import { AlertCircle, Camera, Loader2, Check, X, Heart } from 'lucide-react';
+import EmailRecommendationsForm from '@/components/EmailRecommendationsForm';
 
 const GLASSES_DATA = [
   {
@@ -57,7 +59,7 @@ export default function EssayerV2() {
   const [step, setStep] = useState<Step>('camera');
   const [morphology, setMorphology] = useState<MorphologyResult | null>(null);
   const [currentGlassIndex, setCurrentGlassIndex] = useState(0);
-  const [favorites, setFavorites] = useState<string[]>([]);
+  const { favorites, addFavorite, removeFavorite, isFavorite } = useFavorites();
   const [cameraActive, setCameraActive] = useState(false);
   const [hasGlasses, setHasGlasses] = useState(false);
   const [confirmGlasses, setConfirmGlasses] = useState(false);
@@ -185,7 +187,13 @@ export default function EssayerV2() {
 
   const handleSwipe = (direction: 'left' | 'right') => {
     if (direction === 'right') {
-      setFavorites([...favorites, GLASSES_DATA[currentGlassIndex].id]);
+      const currentGlasses = GLASSES_DATA[currentGlassIndex];
+      addFavorite({
+        id: currentGlasses.id,
+        name: currentGlasses.name,
+        brand: currentGlasses.brand,
+        price: currentGlasses.price,
+      });
     }
 
     // Move to next glasses
@@ -431,10 +439,248 @@ export default function EssayerV2() {
 
             {/* Favorites */}
             {favorites.length > 0 && (
-              <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4">
-                <p className="text-sm font-semibold text-green-700 dark:text-green-300">
-                  ✓ {favorites.length} lunette(s) ajoutée(s) aux favoris
-                </p>
+              <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4 space-y-3">
+                <div className="flex items-center gap-2">
+                  <Heart className="w-5 h-5 text-green-600 dark:text-green-400" />
+                  <p className="text-sm font-semibold text-green-700 dark:text-green-300">
+                    {favorites.length} lunette(s) ajout00e9e(s) aux favoris
+                  </p>
+                </div>
+                <div className="space-y-2 max-h-48 overflow-y-auto">
+                  {favorites.map((fav) => (
+                    <div key={fav.id} className="flex items-center justify-between bg-white dark:bg-[#1A2622] p-2 rounded">
+                      <div className="flex-1">
+                        <p className="text-sm font-medium">{fav.name}</p>
+                        <p className="text-xs text-gray-500">{fav.brand} 2022 {fav.price}</p>
+                      </div>
+                      <Button
+                        onClick={() => removeFavorite(fav.id)}
+                        variant="ghost"
+                        size="sm"
+                        className="text-red-600 hover:text-red-700"
+                      >
+                        <X className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            {/* Favorites */}
+            {favorites.length > 0 && (
+              <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4 space-y-3">
+                <div className="flex items-center gap-2">
+                  <Heart className="w-5 h-5 text-green-600 dark:text-green-400" />
+                  <p className="text-sm font-semibold text-green-700 dark:text-green-300">
+                    {favorites.length} lunette(s) ajout00e9e(s) aux favoris
+                  </p>
+                </div>
+                <div className="space-y-2 max-h-48 overflow-y-auto">
+                  {favorites.map((fav) => (
+                    <div key={fav.id} className="flex items-center justify-between bg-white dark:bg-[#1A2622] p-2 rounded">
+                      <div className="flex-1">
+                        <p className="text-sm font-medium">{fav.name}</p>
+                        <p className="text-xs text-gray-500">{fav.brand} 2022 {fav.price}</p>
+                      </div>
+                      <Button
+                        onClick={() => removeFavorite(fav.id)}
+                        variant="ghost"
+                        size="sm"
+                        className="text-red-600 hover:text-red-700"
+                      >
+                        <X className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            {/* Favorites */}
+            {favorites.length > 0 && (
+              <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4 space-y-3">
+                <div className="flex items-center gap-2">
+                  <Heart className="w-5 h-5 text-green-600 dark:text-green-400" />
+                  <p className="text-sm font-semibold text-green-700 dark:text-green-300">
+                    {favorites.length} lunette(s) ajout00e9e(s) aux favoris
+                  </p>
+                </div>
+                <div className="space-y-2 max-h-48 overflow-y-auto">
+                  {favorites.map((fav) => (
+                    <div key={fav.id} className="flex items-center justify-between bg-white dark:bg-[#1A2622] p-2 rounded">
+                      <div className="flex-1">
+                        <p className="text-sm font-medium">{fav.name}</p>
+                        <p className="text-xs text-gray-500">{fav.brand} 2022 {fav.price}</p>
+                      </div>
+                      <Button
+                        onClick={() => removeFavorite(fav.id)}
+                        variant="ghost"
+                        size="sm"
+                        className="text-red-600 hover:text-red-700"
+                      >
+                        <X className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            {/* Favorites */}
+            {favorites.length > 0 && (
+              <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4 space-y-3">
+                <div className="flex items-center gap-2">
+                  <Heart className="w-5 h-5 text-green-600 dark:text-green-400" />
+                  <p className="text-sm font-semibold text-green-700 dark:text-green-300">
+                    {favorites.length} lunette(s) ajout00e9e(s) aux favoris
+                  </p>
+                </div>
+                <div className="space-y-2 max-h-48 overflow-y-auto">
+                  {favorites.map((fav) => (
+                    <div key={fav.id} className="flex items-center justify-between bg-white dark:bg-[#1A2622] p-2 rounded">
+                      <div className="flex-1">
+                        <p className="text-sm font-medium">{fav.name}</p>
+                        <p className="text-xs text-gray-500">{fav.brand} 2022 {fav.price}</p>
+                      </div>
+                      <Button
+                        onClick={() => removeFavorite(fav.id)}
+                        variant="ghost"
+                        size="sm"
+                        className="text-red-600 hover:text-red-700"
+                      >
+                        <X className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            {/* Favorites */}
+            {favorites.length > 0 && (
+              <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4 space-y-3">
+                <div className="flex items-center gap-2">
+                  <Heart className="w-5 h-5 text-green-600 dark:text-green-400" />
+                  <p className="text-sm font-semibold text-green-700 dark:text-green-300">
+                    {favorites.length} lunette(s) ajout00e9e(s) aux favoris
+                  </p>
+                </div>
+                <div className="space-y-2 max-h-48 overflow-y-auto">
+                  {favorites.map((fav) => (
+                    <div key={fav.id} className="flex items-center justify-between bg-white dark:bg-[#1A2622] p-2 rounded">
+                      <div className="flex-1">
+                        <p className="text-sm font-medium">{fav.name}</p>
+                        <p className="text-xs text-gray-500">{fav.brand} 2022 {fav.price}</p>
+                      </div>
+                      <Button
+                        onClick={() => removeFavorite(fav.id)}
+                        variant="ghost"
+                        size="sm"
+                        className="text-red-600 hover:text-red-700"
+                      >
+                        <X className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            {/* Favorites */}
+            {favorites.length > 0 && (
+              <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4 space-y-3">
+                <div className="flex items-center gap-2">
+                  <Heart className="w-5 h-5 text-green-600 dark:text-green-400" />
+                  <p className="text-sm font-semibold text-green-700 dark:text-green-300">
+                    {favorites.length} lunette(s) ajout00e9e(s) aux favoris
+                  </p>
+                </div>
+                <div className="space-y-2 max-h-48 overflow-y-auto">
+                  {favorites.map((fav) => (
+                    <div key={fav.id} className="flex items-center justify-between bg-white dark:bg-[#1A2622] p-2 rounded">
+                      <div className="flex-1">
+                        <p className="text-sm font-medium">{fav.name}</p>
+                        <p className="text-xs text-gray-500">{fav.brand} 2022 {fav.price}</p>
+                      </div>
+                      <Button
+                        onClick={() => removeFavorite(fav.id)}
+                        variant="ghost"
+                        size="sm"
+                        className="text-red-600 hover:text-red-700"
+                      >
+                        <X className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            {/* Favorites */}
+            {favorites.length > 0 && (
+              <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4 space-y-3">
+                <div className="flex items-center gap-2">
+                  <Heart className="w-5 h-5 text-green-600 dark:text-green-400" />
+                  <p className="text-sm font-semibold text-green-700 dark:text-green-300">
+                    {favorites.length} lunette(s) ajout00e9e(s) aux favoris
+                  </p>
+                </div>
+                <div className="space-y-2 max-h-48 overflow-y-auto">
+                  {favorites.map((fav) => (
+                    <div key={fav.id} className="flex items-center justify-between bg-white dark:bg-[#1A2622] p-2 rounded">
+                      <div className="flex-1">
+                        <p className="text-sm font-medium">{fav.name}</p>
+                        <p className="text-xs text-gray-500">{fav.brand} 2022 {fav.price}</p>
+                      </div>
+                      <Button
+                        onClick={() => removeFavorite(fav.id)}
+                        variant="ghost"
+                        size="sm"
+                        className="text-red-600 hover:text-red-700"
+                      >
+                        <X className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            {/* Favorites */}
+            {favorites.length > 0 && (
+              <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4 space-y-3">
+                <div className="flex items-center gap-2">
+                  <Heart className="w-5 h-5 text-green-600 dark:text-green-400" />
+                  <p className="text-sm font-semibold text-green-700 dark:text-green-300">
+                    {favorites.length} lunette(s) ajout00e9e(s) aux favoris
+                  </p>
+                </div>
+                <div className="space-y-2 max-h-48 overflow-y-auto">
+                  {favorites.map((fav) => (
+                    <div key={fav.id} className="flex items-center justify-between bg-white dark:bg-[#1A2622] p-2 rounded">
+                      <div className="flex-1">
+                        <p className="text-sm font-medium">{fav.name}</p>
+                        <p className="text-xs text-gray-500">{fav.brand} 2022 {fav.price}</p>
+                      </div>
+                      <Button
+                        onClick={() => removeFavorite(fav.id)}
+                        variant="ghost"
+                        size="sm"
+                        className="text-red-600 hover:text-red-700"
+                      >
+                        <X className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Email Recommendations Form */}
+            {morphology && (
+              <div className="bg-white dark:bg-[#1A2622] rounded-lg p-6 border border-gray-200 dark:border-gray-700">
+                <h3 className="text-lg font-serif font-bold mb-4">Recevoir vos recommandations</h3>
+                <EmailRecommendationsForm
+                  morphology={morphology}
+                  favorites={favorites}
+                  onSuccess={() => {
+                    // Optional: Show success message or navigate
+                  }}
+                />
               </div>
             )}
           </motion.div>

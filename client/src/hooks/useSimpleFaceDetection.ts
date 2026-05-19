@@ -27,10 +27,24 @@ export interface MorphologyResult {
   explanation: string;
 }
 
-/**
- * Simplified face detection using canvas pixel analysis
- * This is a fallback when MediaPipe models are unavailable
- */
+// Improved skin tone detection for multiple skin tones
+const isSkinTone = (r: number, g: number, b: number, gray: number): boolean => {
+  const maxRGB = Math.max(r, g, b);
+  if (maxRGB === 0) return false;
+
+  const rNorm = r / maxRGB;
+  const gNorm = g / maxRGB;
+  const bNorm = b / maxRGB;
+
+  const isRGBPattern = rNorm >= 0.36 && gNorm <= 0.85 && bNorm <= 0.75;
+  const hasRedShift = r > b && r > g * 0.9;
+  const hasYellowShift = r > 0 && g > 0 && Math.abs(r - g) < 60;
+  const hasBrownShift = r > 60 && g > 40 && b > 20;
+  const isBrightness = gray > 40 && gray < 220;
+
+  return isRGBPattern && isBrightness && (hasRedShift || hasYellowShift || hasBrownShift);
+};
+
 export const useSimpleFaceDetection = (videoRef: React.RefObject<HTMLVideoElement>) => {
   const [result, setResult] = useState<FaceDetectionResult>({
     metrics: null,
@@ -45,7 +59,6 @@ export const useSimpleFaceDetection = (videoRef: React.RefObject<HTMLVideoElemen
   const detectFaceRegion = useCallback((imageData: ImageData): FaceMetrics | null => {
     const { data, width, height } = imageData;
     
-    // Convert to grayscale and find face region (darker areas)
     const grayscale = new Uint8Array(width * height);
     for (let i = 0; i < data.length; i += 4) {
       const r = data[i];
@@ -54,7 +67,6 @@ export const useSimpleFaceDetection = (videoRef: React.RefObject<HTMLVideoElemen
       grayscale[i / 4] = (r + g + b) / 3;
     }
 
-    // Find face boundaries using edge detection
     let minX = width, maxX = 0, minY = height, maxY = 0;
     let facePixelCount = 0;
 
@@ -63,16 +75,11 @@ export const useSimpleFaceDetection = (videoRef: React.RefObject<HTMLVideoElemen
         const idx = y * width + x;
         const gray = grayscale[idx];
         
-        // Skin tone detection (simplified)
-        // Typical skin tones have R > G > B and moderate brightness
         const r = data[idx * 4];
         const g = data[idx * 4 + 1];
         const b = data[idx * 4 + 2];
         
-        if (r > 95 && g > 40 && b > 20 && 
-            r > g && g > b && 
-            Math.abs(r - g) > 15 &&
-            gray > 50 && gray < 200) {
+        if (isSkinTone(r, g, b, gray)) {
           minX = Math.min(minX, x);
           maxX = Math.max(maxX, x);
           minY = Math.min(minY, y);
@@ -82,7 +89,6 @@ export const useSimpleFaceDetection = (videoRef: React.RefObject<HTMLVideoElemen
       }
     }
 
-    // If no face detected
     if (facePixelCount < 1000) {
       return null;
     }
@@ -92,18 +98,13 @@ export const useSimpleFaceDetection = (videoRef: React.RefObject<HTMLVideoElemen
     const centerX = minX + faceWidth / 2;
     const centerY = minY + faceHeight / 2;
 
-    // Estimate facial features based on proportions
     const foreheadWidth = faceWidth * 0.8;
     const cheekboneWidth = faceWidth * 0.9;
     const jawWidth = faceWidth * 0.6;
 
-    // Calculate jawline definition (how much narrower jaw is than cheekbones)
     const jawlineDefinition = Math.max(0, (cheekboneWidth - jawWidth) / cheekboneWidth);
-
-    // Calculate cheekbone prominence
     const cheekboneProminence = Math.min(1, cheekboneWidth / faceWidth);
 
-    // Detect glasses (dark areas around eyes)
     let glassesConfidence = 0;
     const eyeRegionTop = centerY - faceHeight * 0.2;
     const eyeRegionBottom = centerY;
@@ -139,7 +140,7 @@ export const useSimpleFaceDetection = (videoRef: React.RefObject<HTMLVideoElemen
       faceLength: faceHeight,
       hasGlasses,
       glassesConfidence,
-      confidence: Math.min(0.7, facePixelCount / 50000), // Normalize confidence
+      confidence: Math.min(0.7, facePixelCount / 50000),
     };
   }, []);
 
@@ -151,7 +152,6 @@ export const useSimpleFaceDetection = (videoRef: React.RefObject<HTMLVideoElemen
 
     const now = Date.now();
     if (now - lastDetectionTimeRef.current < 200) {
-      // Throttle to ~5 FPS for performance
       animationFrameRef.current = requestAnimationFrame(detect);
       return;
     }
@@ -160,7 +160,6 @@ export const useSimpleFaceDetection = (videoRef: React.RefObject<HTMLVideoElemen
     try {
       setResult((prev) => ({ ...prev, isDetecting: true, error: null }));
 
-      // Create canvas if needed
       if (!canvasRef.current) {
         canvasRef.current = document.createElement('canvas');
       }
@@ -215,7 +214,6 @@ export const useSimpleFaceDetection = (videoRef: React.RefObject<HTMLVideoElemen
   const detectMorphology = useCallback((metrics: FaceMetrics): MorphologyResult => {
     const { aspectRatio, jawlineDefinition, cheekboneProminence, faceLength } = metrics;
 
-    // Oval: balanced proportions
     if (aspectRatio > 0.65 && aspectRatio < 0.85 && jawlineDefinition < 0.35) {
       return {
         type: 'oval',
@@ -224,7 +222,6 @@ export const useSimpleFaceDetection = (videoRef: React.RefObject<HTMLVideoElemen
       };
     }
 
-    // Round: soft features
     if (aspectRatio > 0.75 && aspectRatio < 1.0 && jawlineDefinition < 0.3) {
       return {
         type: 'round',
@@ -233,7 +230,6 @@ export const useSimpleFaceDetection = (videoRef: React.RefObject<HTMLVideoElemen
       };
     }
 
-    // Square: strong jawline
     if (aspectRatio > 0.85 && aspectRatio < 1.15 && jawlineDefinition > 0.4) {
       return {
         type: 'square',
@@ -242,7 +238,6 @@ export const useSimpleFaceDetection = (videoRef: React.RefObject<HTMLVideoElemen
       };
     }
 
-    // Heart: prominent cheekbones
     if (aspectRatio > 0.65 && aspectRatio < 0.95 && cheekboneProminence > 0.55) {
       return {
         type: 'heart',
@@ -251,7 +246,6 @@ export const useSimpleFaceDetection = (videoRef: React.RefObject<HTMLVideoElemen
       };
     }
 
-    // Oblong: elongated face
     if (aspectRatio > 1.0 && faceLength > 160) {
       return {
         type: 'oblong',
@@ -260,7 +254,6 @@ export const useSimpleFaceDetection = (videoRef: React.RefObject<HTMLVideoElemen
       };
     }
 
-    // Default to oval
     return {
       type: 'oval',
       confidence: 0.55,
