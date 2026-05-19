@@ -1,15 +1,8 @@
 {
   "build_command": "pnpm run build",
-  "capabilities": [
-    "db",
-    "server",
-    "user"
-  ],
+  "capabilities": [],
   "dev_command": "pnpm run dev",
-  "env_vars": {
-    "DATABASE_URL": "mysql://3iPzcCLw3e2kSZa.root:3nN0I8aPhigN12POpI3S@gateway06.us-east-1.prod.aws.tidbcloud.com:4000/XHqiHCtKYoHGBxHprzKY3y?ssl={\"rejectUnauthorized\":true}",
-    "DRIZZLE_DATABASE_URL": "mysql://3iPzcCLw3e2kSZa.root:3nN0I8aPhigN12POpI3S@gateway06.us-east-1.prod.aws.tidbcloud.com:4000/XHqiHCtKYoHGBxHprzKY3y?ssl={\"rejectUnauthorized\":true}"
-  },
+  "env_vars": {},
   "experiments": null,
   "git_remote": {
     "repo_url": "s3://vida-prod-gitrepo/webdev-git/310519663429713797/XHqiHCtKYoHGBxHprzKY3y",
@@ -20,7 +13,7 @@
   },
   "name": "myshape",
   "path": "/home/ubuntu/myshape",
-  "port": 3000,
+  "port": 8080,
   "secrets": {
     "BUILT_IN_FORGE_API_KEY": "ENwisbQTeZwQgAkjggqQVL",
     "BUILT_IN_FORGE_API_URL": "https://forge.manus.ai",
@@ -37,6 +30,6 @@
     "VITE_FRONTEND_FORGE_API_URL": "https://forge.manus.ai",
     "VITE_OAUTH_PORTAL_URL": "https://manus.im"
   },
-  "template_id": "web-static",
+  "template_id": "web-static-pure",
   "test_command": "pnpm test"
 }
