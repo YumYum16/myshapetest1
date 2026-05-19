@@ -129,6 +129,10 @@ export default function Essayer() {
 
       setResult(fullResult);
 
+      // Réinitialiser les favoris pour la nouvelle analyse
+      setLikedFrames(new Set());
+      localStorage.removeItem('myshape_liked_frames');
+
       // Get recommended frames
       const recommended = framesByShape(fullResult.shape);
       const sorted = [
