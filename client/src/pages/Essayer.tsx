@@ -186,7 +186,8 @@ export default function Essayer() {
   };
 
   const currentFrame = remainingFrames[currentCardIndex];
-  const likedFramesList = remainingFrames.filter((f) => likedFrames.has(f.id));
+  // Afficher TOUS les favoris sauvegardés, pas seulement ceux dans remainingFrames
+  const likedFramesList = frames.filter((f) => likedFrames.has(f.id));
   const likedFramesArray = Array.from(likedFrames);
 
   return (
