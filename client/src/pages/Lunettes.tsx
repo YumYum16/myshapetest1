@@ -60,9 +60,9 @@ export default function Lunettes() {
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [, navigate] = useLocation();
 
-  // Load favorites from localStorage
+  // Load favorites from localStorage (même clé que Essayer.tsx)
   useEffect(() => {
-    const saved = localStorage.getItem('myshape-favorites');
+    const saved = localStorage.getItem('myshape_liked_frames');
     if (saved) setFavorites(new Set(JSON.parse(saved)));
   }, []);
 
@@ -75,7 +75,7 @@ export default function Lunettes() {
       newFavorites.add(frameId);
     }
     setFavorites(newFavorites);
-    localStorage.setItem('myshape-favorites', JSON.stringify(Array.from(newFavorites)));
+    localStorage.setItem('myshape_liked_frames', JSON.stringify(Array.from(newFavorites)));
   };
 
   const filteredFrames = useMemo(() => {
@@ -202,7 +202,7 @@ export default function Lunettes() {
                   }}
                 >
                   <Heart className="w-4 h-4" fill={showFavoritesOnly ? 'currentColor' : 'none'} />
-                  Coups de cœur ({favorites.size})
+                  Coups de cœur ({favorites.size > 0 ? favorites.size : 0})
                 </button>
               </div>
 
